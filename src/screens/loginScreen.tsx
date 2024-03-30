@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 const LoginScreen = () => {
-  // const { logIn } = useContext(UserAuthContext);
+  const { logIn } = useContext(UserAuthContext);
   const schema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
     password: Yup.string()

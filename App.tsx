@@ -19,6 +19,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import ScannerScreen from './src/screens/ScannerScreen';
 import LoginScreen from './src/screens/loginScreen';
 import SignupScreen from './src/screens/SignupScreen';
+import UserAuthContextProvider from './src/context/UserAuthContext';
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,7 @@ function App(): React.JSX.Element {
 
   return (
     <NavigationContainer>
+      <UserAuthContextProvider>
       <Stack.Navigator>
         <Stack.Screen name='Home' component={HomeScreen} />
         <Stack.Screen name='Scanner' component={ScannerScreen} />
@@ -33,6 +35,7 @@ function App(): React.JSX.Element {
         <Stack.Screen name='Signup' component={SignupScreen} />
 
       </Stack.Navigator>
+      </UserAuthContextProvider>
     </NavigationContainer>
   );
 }
