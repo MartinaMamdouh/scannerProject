@@ -55,6 +55,7 @@ const UserAuthContextProvider = ({ children }) => {
       // authentication with static token
       if (username === 'aa@aa' && password === 'aaaaAAAA1@') {
         const staticToken = 'static-token'; 
+        console.log("static token: ",staticToken);
         await AsyncStorage.setItem('token', staticToken);
         setToken(staticToken);
         return true; // Login successful

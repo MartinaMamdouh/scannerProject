@@ -19,6 +19,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import ScannerScreen from './src/screens/ScannerScreen';
 import LoginScreen from './src/screens/loginScreen';
 import SignupScreen from './src/screens/SignupScreen';
+import UserAuthContextProvider from './src/context/UserAuthContext';
 
 const Stack = createStackNavigator();
 
@@ -26,13 +27,16 @@ function App(): React.JSX.Element {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Scanner' component={ScannerScreen} />
-        <Stack.Screen name='Login' component={LoginScreen} />
-        <Stack.Screen name='Signup' component={SignupScreen} />
+      <UserAuthContextProvider>
+        <Stack.Navigator>
+          <Stack.Screen name='Home' component={HomeScreen} />
+          <Stack.Screen name='Scanner' component={ScannerScreen} />
+          <Stack.Screen name='Login' component={LoginScreen} />
+          <Stack.Screen name='Signup' component={SignupScreen} />
 
-      </Stack.Navigator>
+        </Stack.Navigator>
+      </UserAuthContextProvider>
+
     </NavigationContainer>
   );
 }
@@ -42,7 +46,7 @@ const styles = StyleSheet.create({
   //   marginTop: 32,
   //   paddingHorizontal: 24,
   // },
-  
+
 });
 
 export default App;

@@ -3,9 +3,10 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { UserAuthContext } from '../context/UserAuthContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
-  // const { logIn } = useContext(UserAuthContext);
+  const { logIn } = useContext(UserAuthContext);
   const schema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
     password: Yup.string()
@@ -28,8 +29,11 @@ const LoginScreen = () => {
       )
       .required('Password is required.'),
   })
+  const navigation = useNavigation();
+
   const logInHandler = async ({ email, password }) => {
     await logIn(email, password);
+    navigation.navigate('Home');
   };
 
   return (
