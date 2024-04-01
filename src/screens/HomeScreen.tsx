@@ -17,11 +17,12 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text>Welcome to QR Code Scanner App!</Text>
+      <View style={styles.space} />
       <Button title="Scan QR Code" onPress={navigateToScanner} />     
       <View style={styles.space} />
-      <Button title="login" onPress={navigateToLogin} />
-      <View style={styles.space} />
-      <Button title="signup" onPress={navigateToSignup} />
+      <Button title="Logout" onPress={navigateToLogin} />
+      {/* <View style={styles.space} />
+      <Button title="signup" onPress={navigateToSignup} /> */}
 
     </View>
   );

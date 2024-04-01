@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -20,20 +20,22 @@ import ScannerScreen from './src/screens/ScannerScreen';
 import LoginScreen from './src/screens/loginScreen';
 import SignupScreen from './src/screens/SignupScreen';
 import UserAuthContextProvider from './src/context/UserAuthContext';
+import DetailsScreen from './src/screens/DetailsScreen';
 
 const Stack = createStackNavigator();
 
 function App(): React.JSX.Element {
-
+  const [authToken, setAuthToken] = useState(true);
   return (
     <NavigationContainer>
       <UserAuthContextProvider>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}>
+          
           <Stack.Screen name='Home' component={HomeScreen} />
           <Stack.Screen name='Scanner' component={ScannerScreen} />
           <Stack.Screen name='Login' component={LoginScreen} />
           <Stack.Screen name='Signup' component={SignupScreen} />
-
+          <Stack.Screen name='Details' component={DetailsScreen} />
         </Stack.Navigator>
       </UserAuthContextProvider>
 
