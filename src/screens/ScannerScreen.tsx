@@ -110,6 +110,8 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, ToastAndroid, Button } from 'react-native';
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 import { useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/Types';
+import { NavigationProp } from '@react-navigation/native';
 
 export function ScannerScreen() {
     const [torchOn, setTorchOn] = useState(false);
@@ -117,7 +119,7 @@ export function ScannerScreen() {
     const backCamera = useCameraDevice('back');
     const [isCameraActive, setIsCameraActive] = useState(true);
     const [scannedCodes, setScannedCodes] = useState(new Set());
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [tickets, setTickets] = useState([
         { username: 'User1', ticketNumber: 'T1', isEntered: false },
         { username: 'User2', ticketNumber: 'T2', isEntered: false },
@@ -131,12 +133,12 @@ export function ScannerScreen() {
         useCallback(() => {
             if (isFocused) {
                 setIsCameraActive(true);
-                console.log("isCameraActive ",isCameraActive);
+                console.log("isCameraActive ", isCameraActive);
 
                 console.log("focus"); //enable the scanner when the screen is focused
             } else {
                 setIsCameraActive(false);
-                console.log("isCameraActive",isCameraActive);
+                console.log("isCameraActive", isCameraActive);
                 console.log("not focus"); // disable the scanner when the screen is unfocused
             }
             // setIsCameraActive(true);
@@ -161,13 +163,13 @@ export function ScannerScreen() {
         handleCameraPermission();
     }, []);
 
-    const toggleEntered = (index) => {
-        setTickets((prevTickets) =>
-            prevTickets.map((ticket, i) =>
-                i === index ? { ...ticket, isEntered: !ticket.isEntered } : ticket
-            )
-        );
-    };
+    // const toggleEntered = (index) => {
+    //     setTickets((prevTickets) =>
+    //         prevTickets.map((ticket, i) =>
+    //             i === index ? { ...ticket, isEntered: !ticket.isEntered } : ticket
+    //         )
+    //     );
+    // };
     const handleCameraError = useCallback(() => {
     }, []);
 
@@ -198,6 +200,8 @@ export function ScannerScreen() {
                     updateTicket(code.value!, true);
                     console.log("ticket ", ticket);
                     navigation.navigate('Details', ticket);
+                } else {
+                    //ticket not found
                 }
             } catch (error) {
                 console.error("Error scanning code:", error);
@@ -270,10 +274,10 @@ export function ScannerScreen() {
                 torch={torchOn ? 'on' : 'off'}
                 onError={handleCameraError}
                 resizeMode="cover"
-                
+
             />}
 
-<View style={styles.overlay} />
+            <View style={styles.overlay} />
             <TouchableOpacity
                 style={styles.torchButton}
                 onPress={() => setTorchOn((prev) => !prev)}
@@ -315,7 +319,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#00FF00', // Green border for the scanning area
         borderRadius: 10, // Optional: for rounded corners
-        backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
+        backgroundColor: 'rgba(0,0,0,0.2)', // Semi-transparent background
     },
 });
 export default ScannerScreen;

@@ -1,9 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/Types';
+import { NavigationProp } from '@react-navigation/native';
+
 const HomeScreen = () => {
 
-  const navigation = useNavigation();
+  const navigation =useNavigation<NavigationProp<RootStackParamList>>();
 
   const navigateToScanner = () => {
     navigation.navigate('Scanner');

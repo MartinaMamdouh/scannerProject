@@ -1,11 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-const DetailsScreen = ({ route }) => {
+import { DetailsScreenRouteProp, RootStackParamList } from '../navigation/Types';
+import { NavigationProp } from '@react-navigation/native';
+
+const DetailsScreen = ({ route }: { route: DetailsScreenRouteProp }) => {
     const ticket  = route.params;
 console.log("route details", ticket)
-    const navigation = useNavigation();
-    const navigateToScanner = () => {
+const navigation =useNavigation<NavigationProp<RootStackParamList>>();
+const navigateToScanner = () => {
         navigation.navigate('Scanner');
     };
 

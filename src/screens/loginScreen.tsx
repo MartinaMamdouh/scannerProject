@@ -1,14 +1,21 @@
 import React, { createContext, useContext, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { UserAuthContext } from '../context/UserAuthContext';
+import { View, Text, TextInput, Button, StyleSheet, Alert, GestureResponderEvent } from 'react-native';
+import { UserAuthContext,useAuth } from '../context/UserAuthContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { RootStackParamList } from '../navigation/Types';
+import { NavigationProp } from '@react-navigation/native';
 
+interface LoginCredentials {
+  username: string;
+  password: string;
+ }
 const LoginScreen = () => {
-  const { logIn } = useContext(UserAuthContext);
+  const { logIn } = useAuth();
   const schema = Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('Email is required'),
+    // email: Yup.string().email('Invalid email').required('Email is required'),
     password: Yup.string()
       .min(8, 'Must be at least 8 characters long')
       .matches(
@@ -29,18 +36,38 @@ const LoginScreen = () => {
       )
       .required('Password is required.'),
   })
-  const navigation = useNavigation();
+  const navigation =useNavigation<NavigationProp<RootStackParamList>>();
 
-  const logInHandler = async ({ email, password }) => {
-    await logIn(email, password);
-    navigation.navigate('Home');
+  const logInHandler = async ({ username, password }:LoginCredentials ) => {
+    // await logIn(username, password);
+    // navigation.navigate('Home');
+    axios.post('https://webtest.bibalex.org/onLineTicketingAdminAPIs/login/Applogin', { Username:username, password:password })
+      .then(async ({ data }) => {
+        console.log("data", data);
+
+        // const username = email; //setGeneric doesn't accept email-only, only username
+        // if (enableTouch) {
+        //   Keychain.setGenericPassword(username, password);
+        //   console.log("email:", email);
+        //   console.log("username:", username);
+        // }
+        // let { user, token } = data;
+        // await logIn(user, token);
+        // navigation.navigate('Home');
+
+        await logIn(username, password);
+        navigation.navigate('Home');
+      })
+.catch((error) => {
+  console.log("error", error);
+})
   };
 
   return (
     <View style={styles.container}>
-       <Text style={styles.title}>Login </Text>
+      <Text style={styles.title}>Login </Text>
       <Formik
-        initialValues={{ email: '', password: '' }}
+        initialValues={{ username: '', password: '' }}
         validationSchema={schema}
         onSubmit={(values) => {
           // Your login logic here
@@ -49,15 +76,15 @@ const LoginScreen = () => {
         }}>
         {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
           <>
-            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.label}>User Name:</Text>
             <TextInput
               style={styles.input}
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              keyboardType="email-address"
+              onChangeText={handleChange('username')}
+              onBlur={handleBlur('username')}
+              value={values.username}
+              // keyboardType="email-address"
             />
-            {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>}
+            {touched.username && errors.username && <Text style={styles.error}>{errors.username}</Text>}
 
             <Text style={styles.label}>Password:</Text>
             <TextInput
@@ -69,7 +96,7 @@ const LoginScreen = () => {
             />
             {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
-            <Button title="Login" onPress={handleSubmit} />
+            <Button title="Login" onPress={handleSubmit  as (e?: GestureResponderEvent) => void} />
           </>
         )}
       </Formik>
@@ -87,7 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-},
+  },
   label: {
     marginBottom: 5,
   },
