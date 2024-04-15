@@ -39,28 +39,28 @@ const LoginScreen = () => {
   const navigation =useNavigation<NavigationProp<RootStackParamList>>();
 
   const logInHandler = async ({ username, password }:LoginCredentials ) => {
-    // await logIn(username, password);
-    // navigation.navigate('Home');
-    axios.post('https://webtest.bibalex.org/onLineTicketingAdminAPIs/login/Applogin', { Username:username, password:password })
-      .then(async ({ data }) => {
-        console.log("data", data);
+    await logIn(username, password);
+    navigation.navigate('Home');
+//     axios.post('https://webtest.bibalex.org/onLineTicketingAdminAPIs/login/Applogin', { Username:username, password:password })
+//       .then(async ({ data }) => {
+//         console.log("data", data);
 
-        // const username = email; //setGeneric doesn't accept email-only, only username
-        // if (enableTouch) {
-        //   Keychain.setGenericPassword(username, password);
-        //   console.log("email:", email);
-        //   console.log("username:", username);
-        // }
-        // let { user, token } = data;
-        // await logIn(user, token);
-        // navigation.navigate('Home');
+//         // const username = email; //setGeneric doesn't accept email-only, only username
+//         // if (enableTouch) {
+//         //   Keychain.setGenericPassword(username, password);
+//         //   console.log("email:", email);
+//         //   console.log("username:", username);
+//         // }
+//         // let { user, token } = data;
+//         // await logIn(user, token);
+//         // navigation.navigate('Home');
 
-        await logIn(username, password);
-        navigation.navigate('Home');
-      })
-.catch((error) => {
-  console.log("error", error);
-})
+//         await logIn(username, password);
+//         navigation.navigate('Home');
+//       })
+// .catch((error) => {
+//   console.log("error", error);
+// })
   };
 
   return (
@@ -70,7 +70,6 @@ const LoginScreen = () => {
         initialValues={{ username: '', password: '' }}
         validationSchema={schema}
         onSubmit={(values) => {
-          // Your login logic here
           console.log('Logging in with values:', values);
           logInHandler(values);
         }}>

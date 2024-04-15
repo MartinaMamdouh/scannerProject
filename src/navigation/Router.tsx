@@ -8,26 +8,26 @@ import SignupScreen from '../screens/SignupScreen';
 import DetailsScreen from '../screens/DetailsScreen';
 import { RootStackParamList } from './Types';
 import UserAuthContextProvider from '../context/UserAuthContext';
- 
-  
+
+
 const Router = () => {
-    const Stack = createStackNavigator<RootStackParamList>();
-    const [authToken, setAuthToken] = useState(true);
+  const Stack = createStackNavigator<RootStackParamList>();
+  const [authToken, setAuthToken] = useState(true);
 
   return (
     <NavigationContainer>
-    <UserAuthContextProvider>
-      <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}>
-        
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Scanner' component={ScannerScreen} />
-        <Stack.Screen name='Login' component={LoginScreen} />
-        <Stack.Screen name='Signup' component={SignupScreen} />
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </UserAuthContextProvider>
+      <UserAuthContextProvider>
+        <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}>
+          <Stack.Screen name='Login' component={LoginScreen} />
+          <Stack.Screen name='Home' component={HomeScreen} />
+          <Stack.Screen name='Scanner' component={ScannerScreen} />
+          <Stack.Screen name='Details' component={DetailsScreen} />
+          <Stack.Screen name='Signup' component={SignupScreen} />
 
-  </NavigationContainer>
+        </Stack.Navigator>
+      </UserAuthContextProvider>
+
+    </NavigationContainer>
   );
 };
 
