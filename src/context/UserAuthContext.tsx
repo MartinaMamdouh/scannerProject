@@ -2,13 +2,12 @@
 import { createContext, useEffect, useState, useContext, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { TOKEN_JWT, USER_NAME } from '../config';
 
-// export const UserAuthContext = createContext();
-
-// const UserAuthContextProvider = ({ children }) => {
 interface UserAuthContextType {
   token: string;
-  logIn: (username: string, password: string) => Promise<boolean>;
+  logIn: (userName: string, authKey: string) => Promise<boolean>;
   logOut: () => Promise<void>;
 }
 
@@ -21,28 +20,42 @@ interface UserAuthContextProviderProps {
 const UserAuthContextProvider = ({ children }: UserAuthContextProviderProps) => {
   const [token, setToken] = useState('');
 
-  const logIn = async (username: string, password: string) => {
+  useEffect(() => {
+    const setData = async () => {
+      // const userData = await AsyncStorage.getItem(USER_ID);
+      // setData(userData ? JSON.parse(userData) : null);
+      setToken((await AsyncStorage.getItem(TOKEN_JWT)) || '');
+    };
+
+    setData();
+  }, []);
+
+  const logIn = async (userName: string, authKey: string) => {
     try {
-      // authentication with static token
-      if (username === 'aa@aa' && password === 'aaaaAAAA1@') {
-        console.log("username: ", username);
-        console.log("password: ", password);
-        const staticToken = 'static-token';
-        console.log("static token: ", staticToken);
-        await AsyncStorage.setItem('token', staticToken);
-        setToken(staticToken);
-        return true; // Login successful
+      if (authKey) {
+        await AsyncStorage.setItem(TOKEN_JWT, authKey);        
+        await AsyncStorage.setItem(USER_NAME, userName);
+        console.log("await ",await AsyncStorage.getItem(USER_NAME))
+        setToken(await AsyncStorage.getItem(TOKEN_JWT) || '');
+        axios.defaults.headers.common.Authorization = authKey;
       } else {
-        return false; // Login failed
+        await AsyncStorage.removeItem(TOKEN_JWT);
+        await AsyncStorage.removeItem(USER_NAME);
+        axios.defaults.headers.common.Authorization = '';
       }
+      return true
+
     } catch (error) {
       console.error('Error:', error);
+      
       return false; // Login failed
     }
   };
 
   const logOut = async () => {
-    await AsyncStorage.removeItem('token');
+    axios.defaults.headers.common.Authorization = '';
+    await AsyncStorage.removeItem(TOKEN_JWT);
+    await AsyncStorage.removeItem(USER_NAME);
     setToken('');
   };
 
@@ -58,12 +71,12 @@ const UserAuthContextProvider = ({ children }: UserAuthContextProviderProps) => 
 UserAuthContextProvider.propTypes = {
   children: PropTypes.element.isRequired,
 };
-// export const useAuth = () => useContext(UserAuthContext);
+
 export const useAuth = () => {
   const context = useContext(UserAuthContext);
   if (!context) {
-     throw new Error("useAuth must be used within a UserAuthContextProvider");
+    throw new Error("useAuth must be used within a UserAuthContextProvider");
   }
   return context;
- };
+};
 export default UserAuthContextProvider;

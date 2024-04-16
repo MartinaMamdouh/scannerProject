@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, GestureResponderEvent } from 'react-native';
-import { UserAuthContext,useAuth } from '../context/UserAuthContext';
+import { View, Text, TextInput, Button, StyleSheet, Alert, GestureResponderEvent, ActivityIndicator } from 'react-native';
+import { UserAuthContext, useAuth } from '../context/UserAuthContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
@@ -8,14 +8,15 @@ import axios from 'axios';
 import { RootStackParamList } from '../navigation/Types';
 import { NavigationProp } from '@react-navigation/native';
 
-interface LoginCredentials {
+interface ILogin {
   username: string;
   password: string;
- }
+}
 const LoginScreen = () => {
   const { logIn } = useAuth();
   const schema = Yup.object().shape({
     // email: Yup.string().email('Invalid email').required('Email is required'),
+    username: Yup.string().required('Username is required'),
     password: Yup.string()
       .min(8, 'Must be at least 8 characters long')
       .matches(
@@ -36,31 +37,39 @@ const LoginScreen = () => {
       )
       .required('Password is required.'),
   })
-  const navigation =useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+const [error,setError]=useState('');
+const [isLoading, setIsLoading] = useState(false); 
 
-  const logInHandler = async ({ username, password }:LoginCredentials ) => {
-    await logIn(username, password);
-    navigation.navigate('Home');
-//     axios.post('https://webtest.bibalex.org/onLineTicketingAdminAPIs/login/Applogin', { Username:username, password:password })
-//       .then(async ({ data }) => {
-//         console.log("data", data);
+  const logInHandler = async ({ username, password }: ILogin) => {
+    // await logIn(username, password);
+    // navigation.navigate('Home');
+    setIsLoading(true);
+    axios.post('https://webtest.bibalex.org/onLineTicketingAdminAPIs/login/Applogin', { Username: username, password: password })
+      .then(async ({ data }) => {
+        console.log("data", data);
+        if (data.result === true) {
+          // await logIn(username, password);
+          // navigation.navigate('Home');
+          let { userName, authKey } = data;
+          console.log("userID ", userName);
+          console.log("authKey ", authKey);
+          await logIn(userName, authKey);
+          navigation.navigate('Home');
+        } else {
+          // Handle the case where the result is not true
+          setError(data.errors[0].errorMSG);
+          console.log("erorr ",error)
+          console.log("Login failed");
+        }
 
-//         // const username = email; //setGeneric doesn't accept email-only, only username
-//         // if (enableTouch) {
-//         //   Keychain.setGenericPassword(username, password);
-//         //   console.log("email:", email);
-//         //   console.log("username:", username);
-//         // }
-//         // let { user, token } = data;
-//         // await logIn(user, token);
-//         // navigation.navigate('Home');
-
-//         await logIn(username, password);
-//         navigation.navigate('Home');
-//       })
-// .catch((error) => {
-//   console.log("error", error);
-// })
+      })
+      .catch((error) => {
+        console.log("error", error);
+      })
+      .finally(() => {
+        setIsLoading(false); // Stop loading
+      });
   };
 
   return (
@@ -78,27 +87,38 @@ const LoginScreen = () => {
             <Text style={styles.label}>User Name:</Text>
             <TextInput
               style={styles.input}
-              onChangeText={handleChange('username')}
+              // onChangeText={handleChange('username')}
+              onChangeText={(text) => {
+                setError(''); // Clear the error from the response
+                handleChange('username')(text); // Update the username's value
+              }}
               onBlur={handleBlur('username')}
               value={values.username}
-              // keyboardType="email-address"
+            // keyboardType="email-address"
             />
             {touched.username && errors.username && <Text style={styles.error}>{errors.username}</Text>}
 
             <Text style={styles.label}>Password:</Text>
             <TextInput
               style={styles.input}
-              onChangeText={handleChange('password')}
+              // onChangeText={handleChange('password')}
+              onChangeText={(text) => {
+                setError(''); // Clear the error from the response
+                handleChange('password')(text); // Update the password's value
+              }}
               onBlur={handleBlur('password')}
               value={values.password}
               secureTextEntry
             />
-            {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
+            {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text> }
 
-            <Button title="Login" onPress={handleSubmit  as (e?: GestureResponderEvent) => void} />
+            {error && <Text style={styles.error}>{error}</Text>}
+            <Button title="Login" onPress={handleSubmit as (e?: GestureResponderEvent) => void} />
           </>
         )}
       </Formik>
+      {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+
     </View>
   );
 };
