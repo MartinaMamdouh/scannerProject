@@ -6,11 +6,15 @@
  */
 
 import React from 'react';
-import { StyleSheet, LogBox} from 'react-native';
+import { StyleSheet } from 'react-native';
 import Router from './src/navigation/Router';
-
+import SplashScreen from 'react-native-splash-screen';
 function App(): React.JSX.Element {
-  LogBox.ignoreLogs(["ViewPropTypes will be removed from React Native, along with all other PropTypes. We recommend that you migrate away from PropTypes and switch to a type system like TypeScript. If you need to continue using ViewPropTypes, migrate to the 'deprecated-react-native-prop-types' package."]);
+  
+  setTimeout(() => {
+    SplashScreen.hide();
+  }, 1000);
+
   return (
    <Router/>
   );

@@ -38,38 +38,47 @@ const LoginScreen = () => {
       .required('Password is required.'),
   })
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-const [error,setError]=useState('');
-const [isLoading, setIsLoading] = useState(false); 
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const logInHandler = async ({ username, password }: ILogin) => {
     // await logIn(username, password);
     // navigation.navigate('Home');
-    setIsLoading(true);
-    axios.post('https://webtest.bibalex.org/onLineTicketingAdminAPIs/login/Applogin', { Username: username, password: password })
-      .then(async ({ data }) => {
-        console.log("data", data);
-        if (data.result === true) {
-          // await logIn(username, password);
-          // navigation.navigate('Home');
-          let { userName, authKey } = data;
-          console.log("userID ", userName);
-          console.log("authKey ", authKey);
-          await logIn(userName, authKey);
-          navigation.navigate('Home');
-        } else {
-          // Handle the case where the result is not true
-          setError(data.errors[0].errorMSG);
-          console.log("erorr ",error)
-          console.log("Login failed");
-        }
-
-      })
-      .catch((error) => {
-        console.log("error", error);
-      })
-      .finally(() => {
-        setIsLoading(false); // Stop loading
-      });
+    try{
+      setIsLoading(true);
+      axios.post('https://webtest.bibalex.org/onLineTicketingAdminAPIs/login/Applogin', { Username: username, password: password })
+        .then(async ({ data }) => {
+          console.log("data", data);
+          if (data.result === true) {
+            // await logIn(username, password);
+            // navigation.navigate('Home');
+            let { userName, authKey } = data;
+            console.log("userID ", userName);
+            console.log("authKey ", authKey);
+            await logIn(userName, authKey);
+            navigation.navigate('Home');
+          } else {
+            // Handle the case where the result is not true
+            setError(data.errors[0].errorMSG);
+            console.log("erorr ", error)
+            console.log("Login failed");
+          }
+  
+        })
+        .catch((error) => {
+          Alert.alert(
+            'Error',
+            `${error}`,
+          )
+          console.log("error catch", error);
+        })
+        .finally(() => {
+          setIsLoading(false); // Stop loading
+        });
+    }catch(error){
+console.log("error: ",error);
+    }
+   
   };
 
   return (
@@ -110,14 +119,14 @@ const [isLoading, setIsLoading] = useState(false);
               value={values.password}
               secureTextEntry
             />
-            {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text> }
+            {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
             {error && <Text style={styles.error}>{error}</Text>}
             <Button title="Login" onPress={handleSubmit as (e?: GestureResponderEvent) => void} />
           </>
         )}
       </Formik>
-      {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+      {isLoading && <ActivityIndicator size="large" color="#d1d1e0" />}
 
     </View>
   );

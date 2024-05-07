@@ -53,6 +53,7 @@ const UserAuthContextProvider = ({ children }: UserAuthContextProviderProps) => 
   };
 
   const logOut = async () => {
+    console.log("logout");
     axios.defaults.headers.common.Authorization = '';
     await AsyncStorage.removeItem(TOKEN_JWT);
     await AsyncStorage.removeItem(USER_NAME);

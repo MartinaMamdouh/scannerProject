@@ -12,6 +12,7 @@ import UserAuthContextProvider from '../context/UserAuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { TOKEN_JWT } from '../config';
+import ReaderScreen from '../screens/ReaderScreen';
 
 const Router = () => {
   const Stack = createStackNavigator<RootStackParamList>();
@@ -30,20 +31,19 @@ const Router = () => {
   }, []);
 
   if (loading) {
-    return (<View>
-      <Text>loading</Text>
-    </View>)
-    // null; // Or render a loading screen
+    return null; // Or render a loading screen
   }
   return (
 
     <NavigationContainer>
       <UserAuthContextProvider>
-        <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}>
+        {/* <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}> */}
+        <Stack.Navigator initialRouteName={'Home' }> 
           <Stack.Screen name='Home' component={HomeScreen} />
           <Stack.Screen name='Login' component={LoginScreen} />
 
           <Stack.Screen name='Scanner' component={ScannerScreen} />
+          <Stack.Screen name='Reader' component={ReaderScreen} />
           <Stack.Screen name='Details' component={DetailsScreen} />
           <Stack.Screen name='Signup' component={SignupScreen} />
 
