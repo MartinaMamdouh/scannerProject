@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { DetailsScreenRouteProp, RootStackParamList } from '../navigation/Types';
 import { NavigationProp } from '@react-navigation/native';
+import ErrorScreen from './ErrorScreen';
 
 const DetailsScreen = ({ route }: { route: DetailsScreenRouteProp }) => {
     const ticket = route.params;
@@ -21,7 +22,7 @@ const DetailsScreen = ({ route }: { route: DetailsScreenRouteProp }) => {
             <Text>Ticket Number: {ticket.ticketNumber}</Text>
             {/* <Text>Is Entered: {ticket.isEntered ? 'Yes' : 'No'}</Text> */}
             <Text style={ticket.isEntered ? { color: 'red' } : {}}>
-                {ticket.isEntered ? 'This ticket already entered before' : ''}
+                {ticket.isEntered ? <ErrorScreen/> : ''}
             </Text>
             <Button title="Scan Again" onPress={navigateToScanner} />
             <View style={styles.space} />

@@ -5,18 +5,23 @@
  * @format
  */
 
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React , {useEffect} from 'react';
+import { StyleSheet, View } from 'react-native';
 import Router from './src/navigation/Router';
 import SplashScreen from 'react-native-splash-screen';
 function App(): React.JSX.Element {
   
-  setTimeout(() => {
+  // setTimeout(() => {
+  //   SplashScreen.hide();
+  // }, 1000);
+  useEffect(() => {
     SplashScreen.hide();
-  }, 1000);
+  }, []);
 
   return (
+    <View style={styles.container}>
    <Router/>
+  </View>
   );
 }
 
@@ -25,7 +30,10 @@ const styles = StyleSheet.create({
   //   marginTop: 32,
   //   paddingHorizontal: 24,
   // },
-
+container:{
+  flex:1,
+  backgroundColor:'white'
+}
 });
 
 export default App;

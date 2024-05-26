@@ -95,18 +95,24 @@ export function ReaderScreen() {
                 // <Text>Data: {scannedData}</Text>
 
                 <View style={styles.dataContainer}>
-                    <Text style={styles.title}>Data:</Text>
-                    <Text>Username: {jsonObject ? jsonObject.username : ''}</Text>
-                    <Text>seat number: {jsonObject ? jsonObject.seat_num : ''}</Text>
-                    <Text>ticket number: {jsonObject ? jsonObject.ticket_num : ''}</Text>
-                    <Text>direction: {jsonObject ? jsonObject.direction : ''}</Text>
-
+                    <Text style={styles.scanTitle}>Scan QR Code Again</Text>
+                    <View style={styles.dataContainer}>
+                        <Text style={styles.title}>Data:</Text>
+                        <Text>Username: {jsonObject ? jsonObject.username : ''}</Text>
+                        <Text>seat number: {jsonObject ? jsonObject.seat_num : ''}</Text>
+                        <Text>ticket number: {jsonObject ? jsonObject.ticket_num : ''}</Text>
+                        <Text>direction: {jsonObject ? jsonObject.direction : ''}</Text>
+                        <View style={styles.space} />
+                        <Button title="Home" onPress={navigateToHome}/>
+                    </View>
                 </View>
             ) : (
-                <Text>Please Scan QR Code </Text>
+                <Text style={styles.scanTitle}>Please Scan QR Code </Text>
             )}
-            <View style={styles.space} />
-            <Button title="Home" onPress={navigateToHome} />
+            {/* <View style={styles.space} /> */}
+            {/* <View style={styles.button}>
+                <Button title="Home" onPress={navigateToHome}/>
+            </View> */}
         </View>
     );
 
@@ -121,14 +127,28 @@ const styles = StyleSheet.create({
         height: 10,
     },
     dataContainer: {
-        // flex: 1,
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        marginBottom:130
     },
     title: {
 
         fontSize: 20,
         fontWeight: 'bold'
-    }
+    },
+    scanTitle:{
+        fontSize:25,
+        fontWeight:'bold',
+        flex:1,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+    },
+    // button:{
+    //     flex:1,
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     marginBottom:220
+    // }
 });
 export default ReaderScreen;

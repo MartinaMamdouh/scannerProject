@@ -7,12 +7,36 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { RootStackParamList } from '../navigation/Types';
 import { NavigationProp } from '@react-navigation/native';
+import RNFS from 'react-native-fs';
+import https from 'https';
+import RNFetchBlob from 'rn-fetch-blob';
 
 interface ILogin {
   username: string;
   password: string;
 }
+
 const LoginScreen = () => {
+
+  // const certFile = RNFS.readFile(RNFS.DocumentDirectoryPath + '/dmzcer.csr', 'utf8');
+  // const privateKey = RNFS.readFile(RNFS.DocumentDirectoryPath + '/dmzcer.p8.pem', 'utf8');
+  // const certFile = require('../../android/app/src/main/assets/dmzcer.csr');
+  // const privateKey = require('../../android/app/src/main/assets/dmzcer.p8.pem'); 
+
+  // const certFile = await RNFS.readFile(RNFS.DocumentDirectoryPath + '/dmzcer.csr', 'utf8');
+  // const privateKey = await RNFS.readFile(RNFS.DocumentDirectoryPath + '/dmzcer.p8.pem', 'utf8');
+
+  // let httpsAgent;
+  // const fs = require('react-native-fs');
+  // const https = require('react-native-https');
+
+  // const cert = fs.readFileSync(certFile);
+  // const key = fs.readFileSync(privateKey);
+
+  // const certBuffer = Buffer.from(certFile);
+  // const keyBuffer = Buffer.from(privateKey);
+
+
   const { logIn } = useAuth();
   const schema = Yup.object().shape({
     // email: Yup.string().email('Invalid email').required('Email is required'),
@@ -41,12 +65,85 @@ const LoginScreen = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const copyFileFromAssetsToDocumentDirectory = async () => {
+    const documentDirectoryPath = RNFS.DocumentDirectoryPath;
+    const assetCertPath = 'dmzcer.csr'; // Path to the file in the assets directory
+    const assetKeyPath = 'dmzcer.p8.pem';
+    try {
+      await RNFS.copyFileAssets(assetCertPath, `${documentDirectoryPath}/dmzcer.csr`);
+      await RNFS.copyFileAssets(assetKeyPath, `${documentDirectoryPath}/dmzcer.p8.pem`);
+      console.log('File copied from assets to document directory');
+    } catch (error) {
+      console.error('Error copying file:', error);
+    }
+  };
+
+// const readCertificateFiles = async () => {
+//   try{
+//     const certFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.csr';
+//     const keyFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.p8.pem';
+  
+//     // Read the certificate and private key files
+//     const certFile = await RNFS.readFile(certFilePath, 'utf8');
+//     const privateKey = await RNFS.readFile(keyFilePath, 'utf8');
+//     return { certFile, privateKey };
+
+//   }catch(error){
+//     console.error('Error reading certificate files:', error);
+//   }
+ 
+// }
+
+
+
   const logInHandler = async ({ username, password }: ILogin) => {
     // await logIn(username, password);
     // navigation.navigate('Home');
-    try{
+    try {
       setIsLoading(true);
-      axios.post('https://webtest.bibalex.org/onLineTicketingAdminAPIs/login/Applogin', { Username: username, password: password })
+
+      // httpsAgent = new (require('https').Agent).Agent({
+      //   pfx: Buffer.concat([cert, key]),
+      //   passphrase: '123', // If your private key is protected by a passphrase
+      // });
+
+
+      copyFileFromAssetsToDocumentDirectory();      
+      const certFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.csr';
+      const keyFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.p8.pem';
+    
+      // Read the certificate and private key files
+      const certFile = await RNFS.readFile(certFilePath, 'utf8');
+      const privateKey = await RNFS.readFile(keyFilePath, 'utf8');
+      // console.log('certFile', certFile);
+      // console.log('privateKey', privateKey);
+
+      // const httpsAgent = new https.Agent({
+      //   cert: certFile,
+      //   key: privateKey,
+      //   passphrase: '123', // If your private key is protected by a passphrase
+      // });
+      const customAxios = axios.create({
+        httpsAgent: {
+          cert: certFile,
+          key: privateKey,
+          passphrase: '123', // If your private key is protected by a passphrase
+        },
+      });
+
+      customAxios.post('https://172.16.0.43/login/Applogin', {
+        Username: username, password: password,
+        httpsAgent:{
+          cert: certFile,
+          key: privateKey,
+          passphrase: '123', 
+        }
+        // headers: {
+        //   'Content-Type': 'application/json',
+        //   'X-Cert': certFile, // Pass the certificate as a custom header
+        //   'X-PrivateKey': privateKey, // Pass the private key as a custom header
+        // },
+      })
         .then(async ({ data }) => {
           console.log("data", data);
           if (data.result === true) {
@@ -63,7 +160,7 @@ const LoginScreen = () => {
             console.log("erorr ", error)
             console.log("Login failed");
           }
-  
+
         })
         .catch((error) => {
           Alert.alert(
@@ -75,10 +172,10 @@ const LoginScreen = () => {
         .finally(() => {
           setIsLoading(false); // Stop loading
         });
-    }catch(error){
-console.log("error: ",error);
+    } catch (error) {
+      console.log("error: ", error);
     }
-   
+
   };
 
   return (

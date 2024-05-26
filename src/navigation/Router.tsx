@@ -37,8 +37,8 @@ const Router = () => {
 
     <NavigationContainer>
       <UserAuthContextProvider>
-        {/* <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}> */}
-        <Stack.Navigator initialRouteName={'Home' }> 
+        <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}>
+        {/* <Stack.Navigator initialRouteName={'Home' }>  */}
           <Stack.Screen name='Home' component={HomeScreen} />
           <Stack.Screen name='Login' component={LoginScreen} />
 
