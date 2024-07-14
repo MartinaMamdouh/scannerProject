@@ -10,6 +10,7 @@ import { NavigationProp } from '@react-navigation/native';
 import RNFS from 'react-native-fs';
 import https from 'https';
 import RNFetchBlob from 'rn-fetch-blob';
+import { NativeModules } from 'react-native';
 
 interface ILogin {
   username: string;
@@ -102,42 +103,14 @@ const LoginScreen = () => {
     try {
       setIsLoading(true);
 
-      // httpsAgent = new (require('https').Agent).Agent({
-      //   pfx: Buffer.concat([cert, key]),
-      //   passphrase: '123', // If your private key is protected by a passphrase
-      // });
+      axios.post('/login/testcer', {
+        Username: username, password: password
+        // httpsAgent:{
+        //   cert: certFile,
+        //   key: privateKey,
+        //   passphrase: '123', 
+        // }
 
-
-      copyFileFromAssetsToDocumentDirectory();      
-      const certFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.csr';
-      const keyFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.p8.pem';
-    
-      // Read the certificate and private key files
-      const certFile = await RNFS.readFile(certFilePath, 'utf8');
-      const privateKey = await RNFS.readFile(keyFilePath, 'utf8');
-      // console.log('certFile', certFile);
-      // console.log('privateKey', privateKey);
-
-      // const httpsAgent = new https.Agent({
-      //   cert: certFile,
-      //   key: privateKey,
-      //   passphrase: '123', // If your private key is protected by a passphrase
-      // });
-      const customAxios = axios.create({
-        httpsAgent: {
-          cert: certFile,
-          key: privateKey,
-          passphrase: '123', // If your private key is protected by a passphrase
-        },
-      });
-
-      customAxios.post('https://172.16.0.43/login/Applogin', {
-        Username: username, password: password,
-        httpsAgent:{
-          cert: certFile,
-          key: privateKey,
-          passphrase: '123', 
-        }
         // headers: {
         //   'Content-Type': 'application/json',
         //   'X-Cert': certFile, // Pass the certificate as a custom header
@@ -163,11 +136,27 @@ const LoginScreen = () => {
 
         })
         .catch((error) => {
-          Alert.alert(
-            'Error',
-            `${error}`,
-          )
-          console.log("error catch", error);
+          // Alert.alert(
+          //   'Error',
+          //   `${error}`,
+          // )
+          // console.log("error catch", error);
+                        if (error.response) {
+                // The server responded with a status code outside the 2xx range
+                console.log('Error response:', error.response);
+              } else if (error.request) {
+                // The request was made but no response was received
+                console.log('Error request:', error.request);
+              } else {
+                // Something happened in setting up the request that triggered an error
+                console.log('Error message:', error.message);
+              }
+          // const errorMessage = error.response? error.response.data.message || error.message : 'Network Error';
+          // const url = error.response? error.response.config.url : 'Unknown URL';
+          
+          // // Print the URL and error message
+          // console.log("URL:", url);
+          // console.log("Error Message:", errorMessage);
         })
         .finally(() => {
           setIsLoading(false); // Stop loading

@@ -11,7 +11,7 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.flipper.ReactNativeFlipper
 import com.facebook.soloader.SoLoader
-
+import com.facebook.react.modules.network.OkHttpClientProvider
 
 class MainApplication : Application(), ReactApplication {
 
@@ -23,6 +23,7 @@ class MainApplication : Application(), ReactApplication {
               // add(MyReactNativePackage())
               add(MyNativeModulePackage())
               add(ScannerModulePackage())
+              add(SSLPinningModulePackage())
             }
 
         override fun getJSMainModuleName(): String = "index"
@@ -38,7 +39,7 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     
-    super.onCreate()
+    super.onCreate()   
     SoLoader.init(this, false)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
