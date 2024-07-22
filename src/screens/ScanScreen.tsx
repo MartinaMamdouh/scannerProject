@@ -23,7 +23,7 @@ const HomeScreen = () => {
     fetchUserName();
   }, []);
   const navigateToScanner = () => {
-    navigation.navigate('Scanner');
+    navigation.navigate('CameraScanner');
   };
   const navigateToReader = () => {
     navigation.navigate('Reader');

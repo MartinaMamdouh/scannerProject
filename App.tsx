@@ -7,6 +7,7 @@ import { API_URL, copyFileFromAssetsToDocumentDirectory, getCertificateAndPrivat
 import sslPinning from 'react-native-ssl-pinning';
 import { NativeModules } from 'react-native';
 import { initializeSslPinning } from 'react-native-ssl-public-key-pinning';
+import RNFetchBlob from 'rn-fetch-blob';
 
 function App(): React.JSX.Element {
 
@@ -14,56 +15,86 @@ function App(): React.JSX.Element {
   //   SplashScreen.hide();
   // }, 1000);
   const { SSLPinningModule } = NativeModules;
- 
+
   useEffect(() => {
     SplashScreen.hide();
-   
+    //     const fetchData = async () => {
+    //       try {
+    //           const response = await axios.get('https://webtest.bibalex.org/onLineTicketingAPIs/Lookup/GetNationalities');
+    //           console.log("data", response.data);
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    //   };
 
+    //   fetchData();
+    // }, []); 
+   
     const initializeSSLPinning = async () => {
       // const message=await SSLPinningModule.createNewNetworkClient();
       SSLPinningModule.createNewNetworkClient()
         .then((message: string) => {
           console.log(message); // OkHttpClient created successfully
           axios.defaults.baseURL = API_URL;
-          // axios.defaults.timeout = 10000;
-        //   const customAxios = axios.create({
-        //     baseURL: API_URL,
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        // });
-      
-        
-        // axios.post('/login/Applogin', {
-        //     Username: "username", password: "aaaAAA111"
-        //   })
-        //     .then(async ({ data }) => {
-        //       console.log("data", data);
+          
+          axios.get('/login/testcer')
+            .then(async ({ data }) => {
+              console.log("data", data);
+            })
+            .catch((error) => {
+              if (error.response) {
+                // The server responded with a status code outside the 2xx range
+                console.log('Error response:', error.response);
+              } else if (error.request) {
+                // The request was made but no response was received
+                console.log('Error request:', error.request);
+              } else {
+                // Something happened in setting up the request that triggered an error
+                console.log('Error message:', error.message);
+              }
+            });
 
-        //     })
-        //     .catch((error) => {
-        //       if (error.response) {
-        //         // The server responded with a status code outside the 2xx range
-        //         console.log('Error response:', error.response);
-        //       } else if (error.request) {
-        //         // The request was made but no response was received
-        //         console.log('Error request:', error.request);
-        //       } else {
-        //         // Something happened in setting up the request that triggered an error
-        //         console.log('Error message:', error.message);
-        //       }
-        //     })
+
+          // axios.defaults.timeout = 10000;
+          //   const customAxios = axios.create({
+          //     baseURL: API_URL,
+          //     headers: {
+          //         'Content-Type': 'application/json',
+          //     },
+          // });
+
+
+          // axios.post('/login/Applogin', {
+          //     Username: "username", password: "aaaAAA111"
+          //   })
+          //     .then(async ({ data }) => {
+          //       console.log("data", data);
+
+          //     })
+          //     .catch((error) => {
+          //       if (error.response) {
+          //         // The server responded with a status code outside the 2xx range
+          //         console.log('Error response:', error.response);
+          //       } else if (error.request) {
+          //         // The request was made but no response was received
+          //         console.log('Error request:', error.request);
+          //       } else {
+          //         // Something happened in setting up the request that triggered an error
+          //         console.log('Error message:', error.message);
+          //       }
+          //     })
 
         })
         .catch((error: string) => {
-           console.error(error);
-      });
+          console.error(error);
+        });
 
     };
     initializeSSLPinning();
-///////////////////////////////////////
+   
+    ///////////////////////////////////////
     // const initializeSSLPinning = async () => {
-     
+
     //   // axios.defaults.baseURL = API_URL;
 
     //   const { certFile, privateKey } = await getCertificateAndPrivateKey();
@@ -74,11 +105,11 @@ function App(): React.JSX.Element {
 
     //   axios.post('https://172.16.0.43/login/Applogin', {
     //     Username: "username", password: "password"
-      
+
     //   })
     //     .then(async ({ data }) => {
     //       console.log("data", data);
-          
+
 
     //     })
     //     .catch((error) => {
@@ -87,11 +118,11 @@ function App(): React.JSX.Element {
     //       //   `${error}`,
     //       // )
     //       console.log("error catch", error);
-          
+
     //     })
-      
+
     //   // axios.create({
-      
+
     //   //   httpsAgent: {
     //   //     cert: certFile,
     //   //     key: privateKey,

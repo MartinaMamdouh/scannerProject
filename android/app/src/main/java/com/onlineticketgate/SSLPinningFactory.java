@@ -40,6 +40,9 @@ public class SSLPinningFactory implements OkHttpClientFactory {
     private String hostname = "oldev.bibalex.org"; // Set actual hostname here
     private String pfxPassword = "123"; // Set PFX password here
 
+    // private String hostname = "viewer2.bibalex.org"; // Set actual hostname here
+    // private String pfxPassword = "|21a46;l2r4B"; // Set PFX password here
+
     public SSLPinningFactory(Context context) {
         this.context = context;
     }
@@ -50,9 +53,11 @@ public class SSLPinningFactory implements OkHttpClientFactory {
             // Load the .pfx file from assets
             AssetManager assetManager = context.getAssets();
             InputStream inputStream = assetManager.open("DMZ_Admin.pfx");
+            // InputStream inputStream = assetManager.open("keystore_2.bks");
             Log.d("SSLPining", " inputStream: " + inputStream.available());
 
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
+            // KeyStore keyStore = KeyStore.getInstance("BKS");
             Log.d("SSLPining", " keyStore: " + keyStore);
             keyStore.load(inputStream, pfxPassword.toCharArray());
             Log.d("SSLPining", " keyStore: " + keyStore.size());
@@ -77,6 +82,8 @@ public class SSLPinningFactory implements OkHttpClientFactory {
                     .hostnameVerifier((hostname, session) -> true)
                     .authenticator((route, response) -> response.request())
                     .cookieJar(cookieJarContainer)
+                    // .protocols(Protocol.ONLY_HTTP1)
+                    // .protocols(Arrays.asList(HTTP_2, HTTP_1_1))
                     // .protocols(Protocol.HTTP_1_1)
                     // .protocols(Collections.singletonList(Protocol.HTTP_1_1))
                     // .protocols(Util.immutableList(Protocol.HTTP_1_1))

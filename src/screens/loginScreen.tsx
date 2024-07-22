@@ -79,21 +79,21 @@ const LoginScreen = () => {
     }
   };
 
-// const readCertificateFiles = async () => {
-//   try{
-//     const certFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.csr';
-//     const keyFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.p8.pem';
-  
-//     // Read the certificate and private key files
-//     const certFile = await RNFS.readFile(certFilePath, 'utf8');
-//     const privateKey = await RNFS.readFile(keyFilePath, 'utf8');
-//     return { certFile, privateKey };
+  // const readCertificateFiles = async () => {
+  //   try{
+  //     const certFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.csr';
+  //     const keyFilePath = RNFS.DocumentDirectoryPath + '/dmzcer.p8.pem';
 
-//   }catch(error){
-//     console.error('Error reading certificate files:', error);
-//   }
- 
-// }
+  //     // Read the certificate and private key files
+  //     const certFile = await RNFS.readFile(certFilePath, 'utf8');
+  //     const privateKey = await RNFS.readFile(keyFilePath, 'utf8');
+  //     return { certFile, privateKey };
+
+  //   }catch(error){
+  //     console.error('Error reading certificate files:', error);
+  //   }
+
+  // }
 
 
 
@@ -102,62 +102,67 @@ const LoginScreen = () => {
     // navigation.navigate('Home');
     try {
       setIsLoading(true);
+   
 
-      axios.post('/login/testcer', {
-        Username: username, password: password
-        // httpsAgent:{
-        //   cert: certFile,
-        //   key: privateKey,
-        //   passphrase: '123', 
-        // }
 
-        // headers: {
-        //   'Content-Type': 'application/json',
-        //   'X-Cert': certFile, // Pass the certificate as a custom header
-        //   'X-PrivateKey': privateKey, // Pass the private key as a custom header
-        // },
-      })
-        .then(async ({ data }) => {
-          console.log("data", data);
-          if (data.result === true) {
-            // await logIn(username, password);
-            // navigation.navigate('Home');
-            let { userName, authKey } = data;
-            console.log("userID ", userName);
-            console.log("authKey ", authKey);
-            await logIn(userName, authKey);
-            navigation.navigate('Home');
-          } else {
-            // Handle the case where the result is not true
-            setError(data.errors[0].errorMSG);
-            console.log("erorr ", error)
-            console.log("Login failed");
-          }
 
+
+
+        axios.post('/login/Applogin', {
+          Username: username, password: password
+          // httpsAgent:{
+          //   cert: certFile,
+          //   key: privateKey,
+          //   passphrase: '123', 
+          // }
+
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'X-Cert': certFile, // Pass the certificate as a custom header
+          //   'X-PrivateKey': privateKey, // Pass the private key as a custom header
+          // },
         })
-        .catch((error) => {
-          // Alert.alert(
-          //   'Error',
-          //   `${error}`,
-          // )
-          // console.log("error catch", error);
-                        if (error.response) {
-                // The server responded with a status code outside the 2xx range
-                console.log('Error response:', error.response);
-              } else if (error.request) {
-                // The request was made but no response was received
-                console.log('Error request:', error.request);
-              } else {
-                // Something happened in setting up the request that triggered an error
-                console.log('Error message:', error.message);
-              }
-          // const errorMessage = error.response? error.response.data.message || error.message : 'Network Error';
-          // const url = error.response? error.response.config.url : 'Unknown URL';
-          
-          // // Print the URL and error message
-          // console.log("URL:", url);
-          // console.log("Error Message:", errorMessage);
-        })
+          .then(async ({ data }) => {
+            console.log("data", data);
+            if (data.result === true) {
+              // await logIn(username, password);
+              // navigation.navigate('Home');
+              let { userName, authKey } = data;
+              console.log("userID ", userName);
+              console.log("authKey ", authKey);
+              await logIn(userName, authKey);
+              navigation.navigate('Scan');
+            } else {
+              // Handle the case where the result is not true
+              setError(data.errors[0].errorMSG);
+              console.log("erorr ", error)
+              console.log("Login failed");
+            }
+
+          })
+          .catch((error) => {
+            // Alert.alert(
+            //   'Error',
+            //   `${error}`,
+            // )
+            // console.log("error catch", error);
+                          if (error.response) {
+                  // The server responded with a status code outside the 2xx range
+                  console.log('Error response:', error.response);
+                } else if (error.request) {
+                  // The request was made but no response was received
+                  console.log('Error request:', error.request);
+                } else {
+                  // Something happened in setting up the request that triggered an error
+                  console.log('Error message:', error.message);
+                }
+            // const errorMessage = error.response? error.response.data.message || error.message : 'Network Error';
+            // const url = error.response? error.response.config.url : 'Unknown URL';
+
+            // // Print the URL and error message
+            // console.log("URL:", url);
+            // console.log("Error Message:", errorMessage);
+          })
         .finally(() => {
           setIsLoading(false); // Stop loading
         });

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../screens/HomeScreen';
-import ScannerScreen from '../screens/ScannerScreen';
+import ScanScreen from '../screens/ScanScreen';
+import CameraScannerScreen from '../screens/CameraScannerScreen';
 import LoginScreen from '../screens/loginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import DetailsScreen from '../screens/DetailsScreen';
@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { TOKEN_JWT } from '../config';
 import ReaderScreen from '../screens/ReaderScreen';
+import { InScreen } from '../screens/InScreen';
 
 const Router = () => {
   const Stack = createStackNavigator<RootStackParamList>();
@@ -37,15 +38,16 @@ const Router = () => {
 
     <NavigationContainer>
       <UserAuthContextProvider>
-        <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}>
+        <Stack.Navigator initialRouteName={!!authToken ? 'Scan' : 'Scan'}>
         {/* <Stack.Navigator initialRouteName={'Home' }>  */}
-          <Stack.Screen name='Home' component={HomeScreen} />
+          <Stack.Screen name='Scan' component={ScanScreen} />
           <Stack.Screen name='Login' component={LoginScreen} />
 
-          <Stack.Screen name='Scanner' component={ScannerScreen} />
+          <Stack.Screen name='CameraScanner' component={CameraScannerScreen} />
           <Stack.Screen name='Reader' component={ReaderScreen} />
           <Stack.Screen name='Details' component={DetailsScreen} />
           <Stack.Screen name='Signup' component={SignupScreen} />
+          <Stack.Screen name='In' component={InScreen} />
 
         </Stack.Navigator>
       </UserAuthContextProvider>

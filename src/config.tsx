@@ -1,9 +1,12 @@
 import axios from 'axios';
 import RNFS from 'react-native-fs';
+import customAdapter from './screens/customAdapter';
 
 export const TOKEN_JWT = 'token_jwt';
 export const USER_NAME = 'user_name';
 export const API_URL = 'https://oldev.bibalex.org';
+//172.16.0.43   oldev.bibalex.org
+// export const API_URL = 'https://webtest.bibalex.org';
 
 export const copyFileFromAssetsToDocumentDirectory = async () => {
   const documentDirectoryPath = RNFS.DocumentDirectoryPath;
@@ -37,3 +40,7 @@ export const getCertificateAndPrivateKey = async () => {
 };
 
 
+// const axiosInstance = axios.create({
+//   adapter: customAdapter,
+// });
+// export default axiosInstance;

@@ -2,9 +2,10 @@ import { NavigationProp } from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/native';
 
 export type RootStackParamList = {
-    Home: undefined;
-    Scanner: undefined;
+    Scan: undefined;
+    CameraScanner: undefined;
     Reader:undefined;
+    In:undefined;
     Login: undefined;
     Signup: undefined;
     Details : {

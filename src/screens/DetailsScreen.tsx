@@ -10,10 +10,10 @@ const DetailsScreen = ({ route }: { route: DetailsScreenRouteProp }) => {
     console.log("route details", ticket)
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const navigateToScanner = () => {
-        navigation.navigate('Scanner');
+        navigation.navigate('CameraScanner');
     };
     const navigateToHome = () => {
-        navigation.navigate('Home');
+        navigation.navigate('Scan');
     };
     return (
         <View style={styles.container}>
