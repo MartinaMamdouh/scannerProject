@@ -14,6 +14,7 @@ import axios from 'axios';
 import { TOKEN_JWT } from '../config';
 import ReaderScreen from '../screens/ReaderScreen';
 import { InScreen } from '../screens/InScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 const Router = () => {
   const Stack = createStackNavigator<RootStackParamList>();
@@ -38,11 +39,12 @@ const Router = () => {
 
     <NavigationContainer>
       <UserAuthContextProvider>
-        <Stack.Navigator initialRouteName={!!authToken ? 'Scan' : 'Scan'}>
-        {/* <Stack.Navigator initialRouteName={'Home' }>  */}
-          <Stack.Screen name='Scan' component={ScanScreen} />
+        <Stack.Navigator initialRouteName={!!authToken ? 'Home' : 'Login'}>
+          {/* <Stack.Navigator initialRouteName={'Home' }>  */}
+          <Stack.Screen name='Home' component={HomeScreen} />
           <Stack.Screen name='Login' component={LoginScreen} />
 
+          <Stack.Screen name='Scan' component={ScanScreen} />
           <Stack.Screen name='CameraScanner' component={CameraScannerScreen} />
           <Stack.Screen name='Reader' component={ReaderScreen} />
           <Stack.Screen name='Details' component={DetailsScreen} />

@@ -29,68 +29,68 @@ function App(): React.JSX.Element {
 
     //   fetchData();
     // }, []); 
-   
-    const initializeSSLPinning = async () => {
-      // const message=await SSLPinningModule.createNewNetworkClient();
-      SSLPinningModule.createNewNetworkClient()
-        .then((message: string) => {
-          console.log(message); // OkHttpClient created successfully
-          axios.defaults.baseURL = API_URL;
+    axios.defaults.baseURL = API_URL;
+    // const initializeSSLPinning = async () => {
+    //   // const message=await SSLPinningModule.createNewNetworkClient();
+    //   SSLPinningModule.createNewNetworkClient()
+    //     .then((message: string) => {
+    //       console.log(message); // OkHttpClient created successfully
+    //       axios.defaults.baseURL = API_URL;
           
-          axios.get('/login/testcer')
-            .then(async ({ data }) => {
-              console.log("data", data);
-            })
-            .catch((error) => {
-              if (error.response) {
-                // The server responded with a status code outside the 2xx range
-                console.log('Error response:', error.response);
-              } else if (error.request) {
-                // The request was made but no response was received
-                console.log('Error request:', error.request);
-              } else {
-                // Something happened in setting up the request that triggered an error
-                console.log('Error message:', error.message);
-              }
-            });
+    //       axios.get('/login/testcer')
+    //         .then(async ({ data }) => {
+    //           console.log("data", data);
+    //         })
+    //         .catch((error) => {
+    //           if (error.response) {
+    //             // The server responded with a status code outside the 2xx range
+    //             console.log('Error response:', error.response);
+    //           } else if (error.request) {
+    //             // The request was made but no response was received
+    //             console.log('Error request:', error.request);
+    //           } else {
+    //             // Something happened in setting up the request that triggered an error
+    //             console.log('Error message:', error.message);
+    //           }
+    //         });
 
 
-          // axios.defaults.timeout = 10000;
-          //   const customAxios = axios.create({
-          //     baseURL: API_URL,
-          //     headers: {
-          //         'Content-Type': 'application/json',
-          //     },
-          // });
+    //       // axios.defaults.timeout = 10000;
+    //       //   const customAxios = axios.create({
+    //       //     baseURL: API_URL,
+    //       //     headers: {
+    //       //         'Content-Type': 'application/json',
+    //       //     },
+    //       // });
 
 
-          // axios.post('/login/Applogin', {
-          //     Username: "username", password: "aaaAAA111"
-          //   })
-          //     .then(async ({ data }) => {
-          //       console.log("data", data);
+    //       // axios.post('/login/Applogin', {
+    //       //     Username: "username", password: "aaaAAA111"
+    //       //   })
+    //       //     .then(async ({ data }) => {
+    //       //       console.log("data", data);
 
-          //     })
-          //     .catch((error) => {
-          //       if (error.response) {
-          //         // The server responded with a status code outside the 2xx range
-          //         console.log('Error response:', error.response);
-          //       } else if (error.request) {
-          //         // The request was made but no response was received
-          //         console.log('Error request:', error.request);
-          //       } else {
-          //         // Something happened in setting up the request that triggered an error
-          //         console.log('Error message:', error.message);
-          //       }
-          //     })
+    //       //     })
+    //       //     .catch((error) => {
+    //       //       if (error.response) {
+    //       //         // The server responded with a status code outside the 2xx range
+    //       //         console.log('Error response:', error.response);
+    //       //       } else if (error.request) {
+    //       //         // The request was made but no response was received
+    //       //         console.log('Error request:', error.request);
+    //       //       } else {
+    //       //         // Something happened in setting up the request that triggered an error
+    //       //         console.log('Error message:', error.message);
+    //       //       }
+    //       //     })
 
-        })
-        .catch((error: string) => {
-          console.error(error);
-        });
+    //     })
+    //     .catch((error: string) => {
+    //       console.error(error);
+    //     });
 
-    };
-    initializeSSLPinning();
+    // };
+    // initializeSSLPinning();
    
     ///////////////////////////////////////
     // const initializeSSLPinning = async () => {

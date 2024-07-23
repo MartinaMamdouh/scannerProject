@@ -11,6 +11,7 @@ import RNFS from 'react-native-fs';
 import https from 'https';
 import RNFetchBlob from 'rn-fetch-blob';
 import { NativeModules } from 'react-native';
+import { LoginAPI } from '../APIs';
 
 interface ILogin {
   username: string;
@@ -43,23 +44,23 @@ const LoginScreen = () => {
     // email: Yup.string().email('Invalid email').required('Email is required'),
     username: Yup.string().required('Username is required'),
     password: Yup.string()
-      .min(8, 'Must be at least 8 characters long')
-      .matches(
-        /(?=.*?[A-Z])/,
-        'Must have at least one uppercase letter',
-      )
-      .matches(
-        /(?=.*?[a-z])/,
-        'Must have at least one lowercase letter',
-      )
-      .matches(
-        /(?=.*?[0-9])/,
-        'Must have at least one digit',
-      )
-      .matches(
-        /(?=.*?[#?!@$%^&*-_])/,
-        'Must have at least one special character (#?!@$%^&*-_)',
-      )
+      // .min(8, 'Must be at least 8 characters long')
+      // .matches(
+      //   /(?=.*?[A-Z])/,
+      //   'Must have at least one uppercase letter',
+      // )
+      // .matches(
+      //   /(?=.*?[a-z])/,
+      //   'Must have at least one lowercase letter',
+      // )
+      // .matches(
+      //   /(?=.*?[0-9])/,
+      //   'Must have at least one digit',
+      // )
+      // .matches(
+      //   /(?=.*?[#?!@$%^&*-_])/,
+      //   'Must have at least one special character (#?!@$%^&*-_)',
+      // )
       .required('Password is required.'),
   })
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -103,12 +104,7 @@ const LoginScreen = () => {
     try {
       setIsLoading(true);
    
-
-
-
-
-
-        axios.post('/login/Applogin', {
+        axios.post(LoginAPI, {
           Username: username, password: password
           // httpsAgent:{
           //   cert: certFile,
@@ -127,11 +123,14 @@ const LoginScreen = () => {
             if (data.result === true) {
               // await logIn(username, password);
               // navigation.navigate('Home');
-              let { userName, authKey } = data;
-              console.log("userID ", userName);
+              let { userName, authKey, userID } = data;
+
+              console.log("username ", userName);
+              console.log("userId ", userID);
               console.log("authKey ", authKey);
-              await logIn(userName, authKey);
-              navigation.navigate('Scan');
+              
+              await logIn(userName, authKey, JSON.stringify(userID));
+              navigation.navigate('Home');
             } else {
               // Handle the case where the result is not true
               setError(data.errors[0].errorMSG);

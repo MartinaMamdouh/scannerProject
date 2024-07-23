@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Button, NativeModules, DeviceEventEmitter, Text, View, StyleSheet, AppState, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/Types';
+import { ReaderScreenRouteProp, RootStackParamList } from '../navigation/Types';
 import { NavigationProp } from '@react-navigation/native';
+import { TicketInAPI, TicketOutAPI } from '../APIs';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TOKEN_JWT, USER_ID } from '../config';
 
 
 
-export function ReaderScreen() {
+export function ReaderScreen({ route }: { route: ReaderScreenRouteProp }) {
+    const direction = route.params;
+    var path: string = '';
+    console.log("dir:", direction.direction);
     interface JsonObjectType {
         username: string;
         seat_num: number;
@@ -17,7 +24,12 @@ export function ReaderScreen() {
     }
     const [scannedData, setScannedData] = useState(null);
     const [jsonObject, setJsonObject] = useState<JsonObjectType | null>(null);
-
+    const [token, setToken] = useState('');
+    
+    // useEffect(() => {
+    //     fetchToken();
+    // }, []);
+    // console.log("token1:", token);
     useEffect(() => {
 
         const appStateListener = AppState.addEventListener('change', (nextAppState) => {
@@ -30,34 +42,71 @@ export function ReaderScreen() {
                 // const data = NativeModules.ScannerModule.registerReceiver(); // register when the app comes back active 
                 // setScannedData(data);
             }
+
         });
 
         NativeModules.ScannerModule.registerReceiver(); // Initial registration
-
-        const subscription = DeviceEventEmitter.addListener('onBarcodeDataReceived', (dataResult) => {  //listen to the scanned data            
+        // const fetchToken = async () => {
+        //     const tokenn = await AsyncStorage.getItem(TOKEN_JWT);
+        //     setToken(tokenn || '');
+        //     console.log("token:", token);
+        // };
+        const subscription = DeviceEventEmitter.addListener('onBarcodeDataReceived', async (dataResult) => {  //listen to the scanned data            
             console.log("listen Scanned Data:", dataResult);
             setScannedData(dataResult); // Update state with the received data
-
-            try {
-                const jsonObject = JSON.parse(dataResult);  //if scanned data is json 
-                console.log("Received JSON:", jsonObject);
-                //access the properties of the JSON object
-                console.log("username:", jsonObject.username);
-                console.log("seat_num:", jsonObject.seat_num);
-                console.log("ticket_num:", jsonObject.ticket_num);
-                console.log("direction:", jsonObject.direction);
-                setJsonObject(jsonObject);
-            } catch (error) {
-                // console.error("Error parsing JSON string:", error);
-                Alert.alert(
-                    'Error',
-                    `Error parsing JSON string: ${error}`,
-                    [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ],
-                    { cancelable: false },
-                );
+            if (direction.direction == "in") {
+                path = TicketInAPI;
+            } else {
+                path = TicketOutAPI;
             }
+            
+            console.log("path:", path);
+            // await fetchToken();
+            console.log("token2:", await AsyncStorage.getItem(TOKEN_JWT));
+            axios.post(path, {
+                userId: await AsyncStorage.getItem(USER_ID),
+                ticketQR: dataResult,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${await AsyncStorage.getItem(TOKEN_JWT)}`,
+                }
+            }).then(async ({ data }) => {
+                console.log("result", data.result);
+                console.log("data", data);
+                navigation.navigate('Details', data);
+            })
+                .catch((error) => {
+                    if (error.response) {
+                        // The server responded with a status code outside the 2xx range
+                        console.log('Error response:', error.response);
+                    } else if (error.request) {
+                        // The request was made but no response was received
+                        console.log('Error request:', error.request);
+                    } else {
+                        // Something happened in setting up the request that triggered an error
+                        console.log('Error message:', error.message);
+                    }
+                })
+            // try {
+            //     const jsonObject = JSON.parse(dataResult);  //if scanned data is json 
+            //     console.log("Received JSON:", jsonObject);
+            //     //access the properties of the JSON object
+            //     console.log("username:", jsonObject.username);
+            //     console.log("seat_num:", jsonObject.seat_num);
+            //     console.log("ticket_num:", jsonObject.ticket_num);
+            //     console.log("direction:", jsonObject.direction);
+            //     setJsonObject(jsonObject);
+            // } catch (error) {
+            //     // console.error("Error parsing JSON string:", error);
+            //     Alert.alert(
+            //         'Error',
+            //         `Error parsing JSON string: ${error}`,
+            //         [
+            //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+            //         ],
+            //         { cancelable: false },
+            //     );
+            // }
         });
 
         return () => {
@@ -91,7 +140,8 @@ export function ReaderScreen() {
         <View style={styles.container}>
             {/* <Button title="btn" onPress={handleBridge} /> */}
             <View style={styles.space} />
-            {scannedData ? (
+            <Text style={styles.scanTitle}>Please Scan QR Code </Text>
+            {/* {scannedData ? (
                 // <Text>Data: {scannedData}</Text>
 
                 <View style={styles.dataContainer}>
@@ -103,12 +153,12 @@ export function ReaderScreen() {
                         <Text>ticket number: {jsonObject ? jsonObject.ticket_num : ''}</Text>
                         <Text>direction: {jsonObject ? jsonObject.direction : ''}</Text>
                         <View style={styles.space} />
-                        <Button title="Home" onPress={navigateToHome}/>
+                        <Button title="Home" onPress={navigateToHome} />
                     </View>
                 </View>
             ) : (
                 <Text style={styles.scanTitle}>Please Scan QR Code </Text>
-            )}
+            )} */}
             {/* <View style={styles.space} /> */}
             {/* <View style={styles.button}>
                 <Button title="Home" onPress={navigateToHome}/>
@@ -130,17 +180,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom:130
+        marginBottom: 130
     },
     title: {
 
         fontSize: 20,
         fontWeight: 'bold'
     },
-    scanTitle:{
-        fontSize:25,
-        fontWeight:'bold',
-        flex:1,
+    scanTitle: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
     },

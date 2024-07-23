@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList, ScanScreenRouteProp } from '../navigation/Types';
+import { RootStackParamList } from '../navigation/Types';
 import { NavigationProp } from '@react-navigation/native';
 import { useAuth } from '../context/UserAuthContext';
-import { USER_NAME } from '../config';
+import { TOKEN_JWT, USER_NAME } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ScanScreen = ({route}: { route: ScanScreenRouteProp }) => {
+const HomeScreen = () => {
 
-  const direction = route.params;
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { logOut } = useAuth();
 
   const [userName, setUserName] = useState('');
-
+  const [token, setToken] = useState('');
   useEffect(() => {
     const fetchUserName = async () => {
       const username = await AsyncStorage.getItem(USER_NAME);
@@ -22,14 +21,16 @@ const ScanScreen = ({route}: { route: ScanScreenRouteProp }) => {
     };
 
     fetchUserName();
-  }, []);
-  const navigateToScanner = () => {
-    console.log("direction:",direction.direction);
-    navigation.navigate('CameraScanner',direction);
-  };
-  const navigateToReader = () => {
-    console.log("direction:",direction.direction);
-    navigation.navigate('Reader',direction);
+ 
+  // const fetchToken = async () => {
+  //   const token = await AsyncStorage.getItem(TOKEN_JWT);
+  //   setToken(token || '');
+  // };
+
+  // fetchToken();
+}, []);
+  const navigateToScan = (direction:string) => {
+    navigation.navigate('Reader',{direction});
   };
   const navigateToLogin = () => {
     logOut();
@@ -41,13 +42,13 @@ const ScanScreen = ({route}: { route: ScanScreenRouteProp }) => {
 
     <View style={styles.container}>
       <Text style={styles.usernameTitle}>Welcome {userName}</Text>
-      <Text>Direction:{direction.direction}</Text>
+      {/* <Text style={styles.usernameTitle}> {token}</Text> */}
       <Text style={{ fontSize: 15 }}> QR Code Scanner App!</Text>
 
       <View style={styles.space} />
-      <Button title="Scan QR Code Using Camera" onPress={navigateToScanner} />
+      <Button title="Enter The Event" onPress={() => navigateToScan('in')} />
       <View style={styles.space} />
-      <Button title="Scan QR Code Using Reader" onPress={navigateToReader} />
+      <Button title="Leave The Event" onPress={() => navigateToScan('out')} />
       <View style={styles.space} />
       <Button title="Logout" onPress={navigateToLogin} />
       {/* <View style={styles.space} />
@@ -74,4 +75,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ScanScreen;
+export default HomeScreen;

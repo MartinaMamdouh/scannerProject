@@ -4,9 +4,10 @@ import customAdapter from './screens/customAdapter';
 
 export const TOKEN_JWT = 'token_jwt';
 export const USER_NAME = 'user_name';
-export const API_URL = 'https://oldev.bibalex.org';
+export const USER_ID = 'user_id';
+// export const API_URL = 'https://oldev.bibalex.org';
 //172.16.0.43   oldev.bibalex.org
-// export const API_URL = 'https://webtest.bibalex.org';
+export const API_URL = 'http://172.16.0.43';
 
 export const copyFileFromAssetsToDocumentDirectory = async () => {
   const documentDirectoryPath = RNFS.DocumentDirectoryPath;
